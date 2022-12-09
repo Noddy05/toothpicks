@@ -1,22 +1,21 @@
 
-ArrayList<EToothpick> toothpicks = new ArrayList<EToothpick>();
+ArrayList<Toothpick> toothpicks = new ArrayList<Toothpick>();
 ArrayList<End> ends = new ArrayList<End>();
 float size = 100;
 
 void setup(){
   size(400, 400);
-  EToothpick newToothpick = new EToothpick(new PVector(0, 0), new PVector(1, 0));
+  Toothpick newToothpick = new EToothpick(new PVector(0, 0), new PVector(1, 0)); // <--- Change to correct toothpick type
   toothpicks.add(newToothpick);
-  ends.add(newToothpick.ends[0]);
-  ends.add(newToothpick.ends[1]);
-  ends.add(newToothpick.ends[2]);
+  for(End end : newToothpick.ends)
+    ends.add(end);
 }
 
 void draw(){
-  size = 400 / sqrt(toothpicks.size());
+  size = 300 / sqrt(toothpicks.size());
   translate(width / 2, height / 2);
   background(30);
-  for(EToothpick toothpick : toothpicks){
+  for(Toothpick toothpick : toothpicks){
     toothpick.draw();
   }
   for(End end : ends){
@@ -34,7 +33,7 @@ void expandToothpicks(){
     currentEnds.add(end);
   }
   for(End end : currentEnds){
-    EToothpick newToothpick = new EToothpick(end.position, end.direction);
+    Toothpick newToothpick = new EToothpick(end.position, end.direction); // <--- Change to correct toothpick type
     toothpicks.add(newToothpick);
     ends.remove(end);
     for(int i = 0; i <newToothpick.ends.length; i++)
@@ -48,15 +47,16 @@ void cleanup(){
   for(End end : ends){
     currentEnds.add(end);
   }
+  float endDistance = 0.2;
   for(End end : currentEnds){
     for(End otherEnd : currentEnds){
       if(end == otherEnd)
         continue;
       
-      if(distance(end.position.x, otherEnd.position.x) <= 0.1 && distance(end.position.y, otherEnd.position.y) <= 0.1)
+      if(distance(end.position.x, otherEnd.position.x) <= endDistance && distance(end.position.y, otherEnd.position.y) <= endDistance)
         ends.remove(end);
     }
-    for(EToothpick toothpick : toothpicks){
+    for(Toothpick toothpick : toothpicks){
       boolean skip = false;
       for(int i = 0; i < toothpick.ends.length; i++)
         if(toothpick.ends[i] == end)
@@ -64,7 +64,7 @@ void cleanup(){
       if(skip)
         continue;
         
-      if(distance(end.position.x, toothpick.position.x) <= 0.1 && distance(end.position.y, toothpick.position.y) <= 0.1)
+      if(distance(end.position.x, toothpick.position.x) <= endDistance && distance(end.position.y, toothpick.position.y) <= endDistance)
         ends.remove(end);
     }
   }
